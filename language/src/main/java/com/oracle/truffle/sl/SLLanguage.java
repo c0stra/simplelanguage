@@ -100,9 +100,7 @@ import com.oracle.truffle.sl.nodes.expression.SLWritePropertyNode;
 import com.oracle.truffle.sl.nodes.local.SLLexicalScope;
 import com.oracle.truffle.sl.nodes.local.SLReadLocalVariableNode;
 import com.oracle.truffle.sl.nodes.local.SLWriteLocalVariableNode;
-import com.oracle.truffle.sl.parser.SLNodeFactory;
-import com.oracle.truffle.sl.parser.SimpleLanguageLexer;
-import com.oracle.truffle.sl.parser.SimpleLanguageParser;
+import com.oracle.truffle.sl.parser.*;
 import com.oracle.truffle.sl.runtime.SLBigNumber;
 import com.oracle.truffle.sl.runtime.SLContext;
 import com.oracle.truffle.sl.runtime.SLFunction;
@@ -217,7 +215,8 @@ public final class SLLanguage extends TruffleLanguage<SLContext> {
          * the functions with the SLContext happens lazily in SLEvalRootNode.
          */
         if (request.getArgumentNames().isEmpty()) {
-            functions = SimpleLanguageParser.parseSL(this, source);
+            functions = new SLParser(new SLNodeFactoryRPG(source, this)).parseString(source.getCharacters().toString());
+            //functions = SimpleLanguageParser.parseSL(this, source);
         } else {
             Source requestedSource = request.getSource();
             StringBuilder sb = new StringBuilder();
