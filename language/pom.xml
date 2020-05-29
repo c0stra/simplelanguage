@@ -153,12 +153,12 @@
         <dependency>
             <groupId>foundation.fluent.api</groupId>
             <artifactId>rpg-common</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.8</version>
         </dependency>
         <dependency>
             <groupId>foundation.fluent.api</groupId>
             <artifactId>rpg-apt</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.8</version>
         </dependency>
     </dependencies>
 </project>

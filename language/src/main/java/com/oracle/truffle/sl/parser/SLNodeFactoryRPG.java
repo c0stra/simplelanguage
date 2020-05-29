@@ -1,5 +1,7 @@
 package com.oracle.truffle.sl.parser;
 
+import com.oracle.truffle.api.RootCallTarget;
+import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.source.Source;
@@ -15,6 +17,7 @@ import com.oracle.truffle.sl.nodes.local.SLWriteLocalVariableNodeGen;
 import com.oracle.truffle.sl.nodes.util.SLUnboxNodeGen;
 import foundation.rpg.Match;
 import foundation.rpg.StartSymbol;
+import foundation.rpg.common.AstUtils;
 import foundation.rpg.common.precedence.*;
 import foundation.rpg.common.rules.*;
 import foundation.rpg.common.symbols.*;
@@ -25,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.oracle.truffle.api.frame.FrameSlotKind.Illegal;
+import static foundation.rpg.common.AstUtils.map;
+import static foundation.rpg.common.AstUtils.putIn;
 import static foundation.rpg.common.Patterns.*;
 import static java.util.stream.IntStream.range;
 import static java.util.stream.Stream.concat;
@@ -41,9 +46,13 @@ public class SLNodeFactoryRPG implements ListRules {
         this.language = language;
     }
 
-    @StartSymbol
-    SLLanguage is(@List1 List<SLRootNode> l) {
-        return language;
+    @StartSymbol(parserClassName = "SLParser")
+    Map<String, RootCallTarget> is(SLRootNode n) {
+        return map(n.getName(), Truffle.getRuntime().createCallTarget(n));
+    }
+
+    Map<String, RootCallTarget> is(Map<String, RootCallTarget> m, SLRootNode n) {
+        return putIn(m, n.getName(), Truffle.getRuntime().createCallTarget(n));
     }
 
     SLBlockNode is(LCurl o, @List1 List<SLStatementNode> l, RCurl c) {
